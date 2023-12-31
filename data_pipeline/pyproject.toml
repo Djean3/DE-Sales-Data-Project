@@ -2,7 +2,7 @@
 name = "data-pipeline"
 version = "0.1.0"
 description = ""
-authors = ["Alex Antonison <adantonison@gmail.com>"]
+authors = ["DJ <davidejeaniii@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
