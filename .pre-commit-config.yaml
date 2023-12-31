@@ -18,12 +18,12 @@ repos:
       - id: terraform_validate
         files: ^infrastructure/
 
-    - repo: https://github.com/terraform-docs/terraform-docs
-      rev: "v0.16.0"
-      hooks:
-      - id: terraform-docs-go
-        args: ["--config", ".terraform-docs.yml", "./infrastructure/tf/modules/"]
-        files: ^infrastructure/
+    # - repo: https://github.com/terraform-docs/terraform-docs
+    #   rev: "v0.16.0"
+    #   hooks:
+    #   - id: terraform-docs-go
+    #     args: ["--config", ".terraform-docs.yml", "./infrastructure/tf/modules/"]
+    #     files: ^infrastructure/
 
     # python config
     - repo: https://github.com/pycqa/isort

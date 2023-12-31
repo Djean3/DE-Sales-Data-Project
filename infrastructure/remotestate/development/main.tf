@@ -1,6 +1,6 @@
 # S3 Bucket for Remote State
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-state-343362109472"
+  bucket = "terraform-state-146479615822"
 
   lifecycle {
     prevent_destroy = true
