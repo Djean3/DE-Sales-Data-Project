@@ -1,6 +1,7 @@
 import pandas as pd
 import awswrangler as wr
 
+
 def drop_na(df):
     """Drop na values from dataframe
 
@@ -13,6 +14,7 @@ def drop_na(df):
     clean_data = df.dropna()
     return clean_data
 
+
 def rename_avg_price_to_price(df):
     """rename 'Avg_Price' column to 'Price'
 
@@ -21,8 +23,6 @@ def rename_avg_price_to_price(df):
 
     Returns:
         dataframe: df with updated column name
-    """    
-    df_renamed = df.rename(columns={'Avg_Price': 'Price'})
+    """
+    df_renamed = df.rename(columns={"Avg_Price": "Price"})
     return df_renamed
-
-
