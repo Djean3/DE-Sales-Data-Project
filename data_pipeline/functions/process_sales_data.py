@@ -1,11 +1,7 @@
 import os
 
 import awswrangler as wr
-from aws_lambda_powertools import Logger
 from helpers.datacleaning import drop_na, rename_avg_price_to_price
-
-
-logger = Logger(level=os.environ["LOG_THRESHOLD"])
 
 
 def process_sales_data(event, context):
