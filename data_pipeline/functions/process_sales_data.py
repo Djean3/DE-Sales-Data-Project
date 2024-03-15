@@ -1,8 +1,7 @@
 import os
 
 import awswrangler as wr
-from helpers.datacleaning import drop_na, rename_avg_price_to_price
-
+from helpers.datacleaning import drop_na, rename_avg_price_to_price, remove_trailing_zeros_from_df, update_online_spend_with_quantity, total_spend
 
 def process_sales_data(event, context):
     df = wr.s3.read_csv(
