@@ -175,7 +175,7 @@ st.pyplot(plt)
 
 ###################################################
 
-# Step 1: Map the Coupon_Status to the desired categories
+
 status_mapping = {
     'Clicked': 'Clicked (Not Used)',
     'Used': 'Used',
@@ -197,21 +197,14 @@ sunburst_df = df.groupby(['Coupon_Status', 'Discount_pct']).size().reset_index(n
 # Ensure that the order of Discount_pct is preserved by sorting
 sunburst_df = sunburst_df.sort_values(by=['Coupon_Status', 'Discount_pct'], ascending=[True, True])
 
-# Step 5: Calculate the percentage of each segment manually
-total_count = sunburst_df['Count'].sum()
-sunburst_df['Percentage'] = (sunburst_df['Count'] / total_count) * 100
-
-# Modify the labels to include discount and percentage, both rounded to 2 decimal places
-sunburst_df['label'] = (
-    'Discount: ' + sunburst_df['Discount_pct'].astype(str) + '%' +
-    ' (' + sunburst_df['Percentage'].round(2).astype(str) + '%)'
-)
+# Step 5: Modify the labels for clarity
+sunburst_df['label'] = 'Discount: ' + sunburst_df['Discount_pct'].astype(str) + '%'
 
 # Step 6: Create the sunburst chart
 fig = px.sunburst(
     sunburst_df, 
     path=['Coupon_Status', 'label'], 
-    values='Count',  # Use count of occurrences
+    values='Count',  # Use count of occurrences instead of total spend
     color='Count',
     color_continuous_scale=px.colors.sequential.YlOrRd_r[::-1],
     height=800
@@ -221,7 +214,7 @@ fig = px.sunburst(
 fig.update_layout(coloraxis_showscale=False)
 
 # Update the figure layout and labels
-fig.update_traces(textinfo='label', textfont_size=18)
+fig.update_traces(textinfo='label+percent entry', textfont_size=18)
 fig.update_layout(
     title_text='Coupon Usage by Discount Percentage',
     title_font_size=25,
@@ -231,5 +224,6 @@ fig.update_layout(
 
 # Display the Plotly chart in the Streamlit app
 st.plotly_chart(fig)
+#fig.show()
 
 #########################################
