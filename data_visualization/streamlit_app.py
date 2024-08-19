@@ -171,3 +171,59 @@ plt.tight_layout()
 
 # Display the plot in Streamlit
 st.pyplot(plt)
+
+
+###################################################
+
+# Step 1: Map the Coupon_Status to the desired categories
+status_mapping = {
+    'Clicked': 'Clicked (Not Used)',
+    'Used': 'Used',
+    'Not Used': 'Not Opened'
+}
+df['Coupon_Status'] = df['Coupon_Status'].map(status_mapping)
+
+# Step 2: Convert Discount_pct to a categorical type with a specific order
+discount_order = [10, 20, 30]
+df['Discount_pct'] = pd.Categorical(df['Discount_pct'], categories=discount_order, ordered=True)
+
+# Step 3: Define the custom order for Coupon_Status
+status_order = pd.Categorical(df['Coupon_Status'], categories=["Clicked (Not Used)", "Used", "Not Opened"], ordered=True)
+df['Coupon_Status'] = status_order
+
+# Step 4: Count the number of times each coupon was used or not used
+sunburst_df = df.groupby(['Coupon_Status', 'Discount_pct']).size().reset_index(name='Count')
+
+# Ensure that the order of Discount_pct is preserved by sorting
+sunburst_df = sunburst_df.sort_values(by=['Coupon_Status', 'Discount_pct'], ascending=[True, True])
+
+# Step 5: Modify the labels for clarity
+sunburst_df['label'] = 'Discount: ' + sunburst_df['Discount_pct'].astype(str) + '%'
+
+# Step 6: Create the sunburst chart
+fig = px.sunburst(
+    sunburst_df, 
+    path=['Coupon_Status', 'label'], 
+    values='Count',  # Use count of occurrences instead of total spend
+    color='Count',
+    color_continuous_scale=px.colors.sequential.YlOrRd_r[::-1],
+    height=800
+)
+
+# Remove the color bar if not necessary
+fig.update_layout(coloraxis_showscale=False)
+
+# Update the figure layout and labels
+fig.update_traces(textinfo='label+percent entry', textfont_size=18)
+fig.update_layout(
+    title_text='Coupon Usage by Discount Percentage',
+    title_font_size=25,
+    title_x=0.5,
+    plot_bgcolor='white'
+)
+
+# Display the Plotly chart in the Streamlit app
+st.plotly_chart(fig)
+#fig.show()
+
+#########################################
