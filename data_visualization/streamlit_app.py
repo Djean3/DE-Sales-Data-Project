@@ -176,6 +176,7 @@ st.pyplot(plt)
 ###################################################
 
 # Step 1: Map the Coupon_Status to the desired categories
+# Step 1: Map the Coupon_Status to the desired categories
 status_mapping = {
     'Clicked': 'Clicked (Not Used)',
     'Used': 'Used',
@@ -197,8 +198,8 @@ sunburst_df = df.groupby(['Coupon_Status', 'Discount_pct']).size().reset_index(n
 # Ensure that the order of Discount_pct is preserved by sorting
 sunburst_df = sunburst_df.sort_values(by=['Coupon_Status', 'Discount_pct'], ascending=[True, True])
 
-# Step 5: Modify the labels for clarity
-sunburst_df['label'] = 'Discount: ' + sunburst_df['Discount_pct'].astype(str) + '%'
+# Step 5: Modify the labels for clarity, rounding the count to 2 decimal places
+sunburst_df['label'] = 'Discount: ' + sunburst_df['Discount_pct'].astype(str) + '%' + '<br>Count: ' + sunburst_df['Count'].round(2).astype(str)
 
 # Step 6: Create the sunburst chart
 fig = px.sunburst(
@@ -224,6 +225,5 @@ fig.update_layout(
 
 # Display the Plotly chart in the Streamlit app
 st.plotly_chart(fig)
-#fig.show()
 
 #########################################
