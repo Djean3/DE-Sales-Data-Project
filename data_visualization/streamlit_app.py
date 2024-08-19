@@ -1,8 +1,11 @@
 import streamlit as st
 from src.data_loader import read_data_from_s3
-import plotly.express as px
 import awswrangler as wr
 import plotly.express as px
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.dates as mdates
 st.title("Streams of Data Streamlit Example")
 
 st.header("Data from S3-2")
@@ -124,3 +127,47 @@ fig.update_traces(texttemplate='%{text:$,.2f}', textposition='inside')
 
 # Display the Plotly chart in the Streamlit app (or just show it if running standalone)
 st.plotly_chart(fig) 
+
+
+######################################
+
+
+# Ensure the 'Transaction_Date' column is in datetime format
+df['Transaction_Date'] = pd.to_datetime(df['Transaction_Date'])
+
+# Group the data by Transaction_Date to calculate total sales per day
+daily_sales = df.groupby('Transaction_Date')['Final_Price'].sum().reset_index()
+
+# Calculate a 7-day rolling average for smoothing
+daily_sales['7_day_avg'] = daily_sales['Final_Price'].rolling(window=7).mean()
+
+# Set the seaborn style for the plot
+sns.set(style="whitegrid")
+
+# Create the plot with a wider figure size
+plt.figure(figsize=(16, 8))
+
+# Plot daily sales
+sns.lineplot(x='Transaction_Date', y='Final_Price', data=daily_sales, label='Daily Sales', color='royalblue')
+
+# Plot the 7-day rolling average in red
+sns.lineplot(x='Transaction_Date', y='7_day_avg', data=daily_sales, label='7-Day Rolling Average', color='red', linestyle='--')
+
+# Set the title and labels
+plt.title('Sales Over Time', fontsize=16)
+plt.xlabel('Date', fontsize=14)
+plt.ylabel('Total Sales', fontsize=14)
+plt.legend(title='Metrics')
+
+# Rotate date labels for better readability
+plt.xticks(rotation=45)
+
+# Set x-axis major ticks to every month
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+
+# Adjust layout
+plt.tight_layout()
+
+# Display the plot in Streamlit
+st.pyplot(plt)
