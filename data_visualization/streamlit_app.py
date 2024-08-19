@@ -10,7 +10,15 @@ df = wr.s3.read_parquet("s3://de-sales-data-project-data-lake-146479615822/sales
 
 
 st.dataframe(df)
+##################### Cleaning#####################
 
+df = df.drop(columns=['Total_Spend', 'Offline_Spend', 'Online_Spend'])
+df['Final_Price'] = df.apply(lambda row: 
+                             ((row['Price'] - (row['Price'] * (row['Discount_pct'] / 100))) * (1 + row['GST']) if row['Coupon_Status'] == 'Used' 
+                              else row['Price'] * (1 + row['GST'])) + 
+                             row['Delivery_Charges'], 
+                             axis=1)
+df['Final_Price'] = df['Final_Price'].round(2)
 #########################################################################
 # Group all 'Nest' related categories into one
 # Group all 'Nest' related categories into one
