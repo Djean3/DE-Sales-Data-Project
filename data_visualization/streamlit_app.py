@@ -24,12 +24,13 @@ df['Final_Price'] = df['Final_Price'].round(2)
 
 st.dataframe(df)
 #########################################################################
+
 # Group all 'Nest' related categories into one
-# Group all 'Nest' related categories into one
-# Group all 'Nest' related categories into one
+
+
 #df['Product_Category'] = df['Product_Category'].apply(
-    lambda x: 'Nest' if 'Nest' in x else x
-)
+#    lambda x: 'Nest' if 'Nest' in x else x
+#)
 
 # Calculate total spend by summing the 'Price' column for each product category and sort in descending order
 category_spend = df.groupby('Product_Category')['Price'].sum().reset_index()
