@@ -129,7 +129,7 @@ fig.update_traces(texttemplate='%{text:$,.2f}', textposition='inside')
 st.plotly_chart(fig) 
 
 
-######################################
+#######################################
 
 
 # Ensure the 'Transaction_Date' column is in datetime format
