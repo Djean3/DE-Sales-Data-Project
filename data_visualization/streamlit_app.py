@@ -11,6 +11,7 @@ df = wr.s3.read_parquet("s3://de-sales-data-project-data-lake-146479615822/sales
 
 st.dataframe(df)
 
+# Group all 'Nest' related categories into one
 df['Product_Category'] = df['Product_Category'].apply(
     lambda x: 'Nest' if 'Nest' in x else x
 )
@@ -18,6 +19,9 @@ df['Product_Category'] = df['Product_Category'].apply(
 # Calculate total spend by product category and sort in descending order
 category_spend = df.groupby('Product_Category')['Total_Spend'].sum().reset_index()
 category_spend = category_spend.sort_values(by='Total_Spend', ascending=False)
+
+# Format the Total_Spend to display in millions
+category_spend['Total_Spend'] = category_spend['Total_Spend'] / 1e6
 
 # Define your color map for the product categories using solid colors
 color_map = {
@@ -46,17 +50,21 @@ fig = px.bar(
 # Update layout and styling
 fig.update_layout(
     plot_bgcolor='white',
-    title_text='Total Spend by Product Category',
+    title_text='YTD Total Spend by Product Category',
     title_x=0.5,
     xaxis_title='Product Category',
     yaxis_title='Total Spend (in millions)',  # Clarified that the y-axis is in millions
-    yaxis=dict(tickformat='.2f'),  # Adjust the tick format if necessary
+    yaxis=dict(
+        tickformat='.2f',  # Format ticks as millions
+        tickprefix="$",  # Add dollar sign prefix
+        ticksuffix="M"   # Add 'M' suffix for millions
+    ),
     legend_title_text='Product Categories'
 )
 
-# Add data labels to the bars with specific styling
+# Add data labels to the bars with specific formatting and styling
 fig.update_traces(
-    texttemplate='%{text:.2f}', 
+    texttemplate='%{text:$,.2f}M',  # Format labels with dollar sign, commas, and 'M' for millions
     textposition='outside',
     textfont=dict(color='black')  # Set text color to black for better readability
 )
