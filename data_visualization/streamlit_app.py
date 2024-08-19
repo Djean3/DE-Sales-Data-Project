@@ -9,7 +9,7 @@ st.header("Data from S3-2")
 df = wr.s3.read_parquet("s3://de-sales-data-project-data-lake-146479615822/sales_data/")
 
 
-st.dataframe(df)
+
 ##################### Cleaning#####################
 
 df = df.drop(columns=['Total_Spend', 'Offline_Spend', 'Online_Spend'])
@@ -19,6 +19,10 @@ df['Final_Price'] = df.apply(lambda row:
                              row['Delivery_Charges'], 
                              axis=1)
 df['Final_Price'] = df['Final_Price'].round(2)
+
+
+
+st.dataframe(df)
 #########################################################################
 # Group all 'Nest' related categories into one
 # Group all 'Nest' related categories into one
