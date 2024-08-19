@@ -92,10 +92,7 @@ grouped_df = df.groupby(['Location', 'Gender'])['Final_Price'].sum().reset_index
 grouped_df = grouped_df.sort_values(by='Final_Price', ascending=True)
 
 # Define your color map with shades of blue and green
-color_map = {
-    'Male': '#3498DB',  # Medium blue
-    'Female': '#2ECC71'  # Green
-}
+color_sequence = ['#3498DB', '#2ECC71']  # Blue for Male, Green for Female
 
 # Create the horizontal stacked bar chart
 fig = px.bar(
@@ -110,7 +107,7 @@ fig = px.bar(
     orientation='h',  # Horizontal orientation
     height=600,
     width=1000,
-    color_discrete_map=color_map  # Apply the color map
+    color_discrete_sequence=color_sequence  # Apply the color sequence
 )
 
 # Update the layout for better readability
@@ -126,5 +123,4 @@ fig.update_layout(
 fig.update_traces(texttemplate='%{text:$,.2f}', textposition='inside')
 
 # Display the Plotly chart in the Streamlit app (or just show it if running standalone)
-st.plotly_chart(fig)  # If running in Streamlit
-#fig.show()  # Uncomment this line if running in a local script or Jupyter notebookUncomment this line if running in a local script or Jupyter notebook
+st.plotly_chart(fig) 
