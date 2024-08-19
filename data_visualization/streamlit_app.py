@@ -14,6 +14,7 @@ st.dataframe(df)
 #########################################################################
 # Group all 'Nest' related categories into one
 # Group all 'Nest' related categories into one
+# Group all 'Nest' related categories into one
 df['Product_Category'] = df['Product_Category'].apply(
     lambda x: 'Nest' if 'Nest' in x else x
 )
@@ -22,18 +23,15 @@ df['Product_Category'] = df['Product_Category'].apply(
 category_spend = df.groupby('Product_Category')['Price'].sum().reset_index()
 category_spend = category_spend.sort_values(by='Price', ascending=False)
 
-# Format the 'Price' column to display in millions
-category_spend['Price'] = category_spend['Price'] / 1e6
-
 # Define your color map for the product categories using solid colors
 color_map = {
-    'Nest': '#C9D788',  # Light greenish-yellow
-    'Category A': '#C9D788',  # Light greenish-yellow
-    'Category B': '#c0ca47',  # Medium light variant
-    'Category C': '#85C1E9',  # Light blue
-    'Category D': '#3498DB',  # Medium blue
-    'Category E': '#06275b'   # Dark blue
-    # Add more categories as needed with their corresponding colors
+    'Nest': '#85C1E9',  # Light blue
+    'Category A': '#AED6F1',  # Very light blue
+    'Category B': '#5DADE2',  # Medium light blue
+    'Category C': '#3498DB',  # Medium blue
+    'Category D': '#2E86C1',  # Medium-dark blue
+    'Category E': '#1B4F72'   # Dark blue
+    # Add more categories as needed with their corresponding blue shades
 }
 
 # Create the bar chart using Plotly
@@ -42,7 +40,7 @@ fig = px.bar(
     x='Product_Category',
     y='Price',
     title='Total Spend by Product Category',
-    labels={'Price': 'Total Spend (in millions)', 'Product_Category': 'Product Category'},
+    labels={'Price': 'Total Spend', 'Product_Category': 'Product Category'},
     text='Price',
     width=1200, height=1000,
     color='Product_Category',
@@ -55,18 +53,17 @@ fig.update_layout(
     title_text='YTD Total Spend by Product Category',
     title_x=0.5,
     xaxis_title='Product Category',
-    yaxis_title='Total Spend (in millions)',  # Clarified that the y-axis is in millions
+    yaxis_title='Total Spend ($)',  # Reflects that the y-axis is now in dollars
     yaxis=dict(
-        tickformat='.2f',  # Format ticks as millions
-        tickprefix="$",  # Add dollar sign prefix
-        ticksuffix="M"   # Add 'M' suffix for millions
+        tickformat=',.0f',  # Format ticks as thousands with commas
+        tickprefix="$"  # Add dollar sign prefix
     ),
     legend_title_text='Product Categories'
 )
 
 # Add data labels to the bars with specific formatting and styling
 fig.update_traces(
-    texttemplate='%{text:$,.2f}M',  # Format labels with dollar sign, commas, and 'M' for millions
+    texttemplate='%{text:$,.0f}',  # Format labels with dollar sign and commas
     textposition='outside',
     textfont=dict(color='black')  # Set text color to black for better readability
 )
