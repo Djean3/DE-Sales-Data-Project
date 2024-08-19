@@ -217,7 +217,7 @@ fig.update_layout(coloraxis_showscale=False)
 fig.update_traces(textinfo='label+percent entry', textfont_size=18)
 fig.update_layout(
     title_text='Coupon Usage by Discount Percentage',
-    title_font_size=25,
+    title_font_size=20,
     title_x=0.5,
     plot_bgcolor='white'
 )
