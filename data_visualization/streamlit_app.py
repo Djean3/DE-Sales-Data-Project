@@ -145,7 +145,7 @@ daily_sales['7_day_avg'] = daily_sales['Final_Price'].rolling(window=7).mean()
 sns.set(style="whitegrid")
 
 # Create the plot with a wider figure size
-plt.figure(figsize=(16, 8))
+plt.figure(figsize=(24, 12))
 
 # Plot daily sales
 sns.lineplot(x='Transaction_Date', y='Final_Price', data=daily_sales, label='Daily Sales', color='royalblue')
