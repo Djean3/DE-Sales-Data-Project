@@ -11,17 +11,19 @@ df = wr.s3.read_parquet("s3://de-sales-data-project-data-lake-146479615822/sales
 
 st.dataframe(df)
 
+#########################################################################
+# Group all 'Nest' related categories into one
 # Group all 'Nest' related categories into one
 df['Product_Category'] = df['Product_Category'].apply(
     lambda x: 'Nest' if 'Nest' in x else x
 )
 
-# Calculate total spend by product category and sort in descending order
-category_spend = df.groupby('Product_Category')['Total_Spend'].sum().reset_index()
-category_spend = category_spend.sort_values(by='Total_Spend', ascending=False)
+# Calculate total spend by summing the 'Price' column for each product category and sort in descending order
+category_spend = df.groupby('Product_Category')['Price'].sum().reset_index()
+category_spend = category_spend.sort_values(by='Price', ascending=False)
 
-# Format the Total_Spend to display in millions
-category_spend['Total_Spend'] = category_spend['Total_Spend'] / 1e6
+# Format the 'Price' column to display in millions
+category_spend['Price'] = category_spend['Price'] / 1e6
 
 # Define your color map for the product categories using solid colors
 color_map = {
@@ -38,10 +40,10 @@ color_map = {
 fig = px.bar(
     category_spend,
     x='Product_Category',
-    y='Total_Spend',
+    y='Price',
     title='Total Spend by Product Category',
-    labels={'Total_Spend': 'Total Spend (in millions)', 'Product_Category': 'Product Category'},
-    text='Total_Spend',
+    labels={'Price': 'Total Spend (in millions)', 'Product_Category': 'Product Category'},
+    text='Price',
     width=1200, height=1000,
     color='Product_Category',
     color_discrete_map=color_map
