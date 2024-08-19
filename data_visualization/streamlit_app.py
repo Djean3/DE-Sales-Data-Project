@@ -127,4 +127,4 @@ fig.update_traces(texttemplate='%{text:$,.2f}', textposition='inside')
 
 # Display the Plotly chart in the Streamlit app (or just show it if running standalone)
 st.plotly_chart(fig)  # If running in Streamlit
-fig.show()  # Uncomment this line if running in a local script or Jupyter notebookUncomment this line if running in a local script or Jupyter notebook
+#fig.show()  # Uncomment this line if running in a local script or Jupyter notebookUncomment this line if running in a local script or Jupyter notebook
