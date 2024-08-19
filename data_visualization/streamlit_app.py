@@ -83,3 +83,48 @@ fig.update_traces(
 
 # Display the Plotly chart in the Streamlit app
 st.plotly_chart(fig)
+
+
+#####################################
+grouped_df = df.groupby(['Location', 'Gender'])['Final_Price'].sum().reset_index()
+
+# Sort the data by total sales (Final_Price) in descending order
+grouped_df = grouped_df.sort_values(by='Final_Price', ascending=True)
+
+# Define your color map with shades of blue and green
+color_map = {
+    'Male': '#3498DB',  # Medium blue
+    'Female': '#2ECC71'  # Green
+}
+
+# Create the horizontal stacked bar chart
+fig = px.bar(
+    grouped_df, 
+    y='Location',  # Change to y for horizontal bars
+    x='Final_Price', 
+    color='Gender', 
+    title='Total Sales by Location and Gender',
+    labels={'Final_Price': 'Total Sales', 'Location': 'Region'},
+    text='Final_Price',
+    barmode='stack',
+    orientation='h',  # Horizontal orientation
+    height=600,
+    width=1000,
+    color_discrete_map=color_map  # Apply the color map
+)
+
+# Update the layout for better readability
+fig.update_layout(
+    plot_bgcolor='white',
+    yaxis_title='Location (Region)',
+    xaxis_title='Total Sales',
+    title_x=0.5,
+    legend_title_text='Gender'
+)
+
+# Add data labels to the bars
+fig.update_traces(texttemplate='%{text:$,.2f}', textposition='inside')
+
+# Display the Plotly chart in the Streamlit app (or just show it if running standalone)
+st.plotly_chart(fig)  # If running in Streamlit
+fig.show()  # Uncomment this line if running in a local script or Jupyter notebookUncomment this line if running in a local script or Jupyter notebook
