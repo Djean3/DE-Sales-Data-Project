@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
-st.title("Streams of Data Streamlit Example")
+st.title("Online Sales Dashboard")
 
 st.header("Data from S3-2")
 df = wr.s3.read_parquet("s3://de-sales-data-project-data-lake-146479615822/sales_data/")
