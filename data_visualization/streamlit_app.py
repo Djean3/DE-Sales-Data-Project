@@ -27,7 +27,7 @@ st.dataframe(df)
 # Group all 'Nest' related categories into one
 # Group all 'Nest' related categories into one
 # Group all 'Nest' related categories into one
-df['Product_Category'] = df['Product_Category'].apply(
+#df['Product_Category'] = df['Product_Category'].apply(
     lambda x: 'Nest' if 'Nest' in x else x
 )
 
