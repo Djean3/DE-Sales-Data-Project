@@ -27,6 +27,7 @@ def rename_avg_price_to_price(df):
     df_renamed = df.rename(columns={"Avg_Price": "Price"})
     return df_renamed
 
+
 def remove_trailing_zeros_from_df(df):
     """remove trailing zeros from float columns in dataframe
 
@@ -43,6 +44,7 @@ def remove_trailing_zeros_from_df(df):
             # Use apply to convert float to int if it's an integer, else leave as float
             df[col] = df[col].apply(lambda x: int(x) if x.is_integer() else x)
     return df
+
 
 def update_online_spend_with_quantity(df):
     """Updates the "Online_Spend" column in a DataFrame with cumulative spending amounts per customer, factoring in the quantity of each transaction.
@@ -89,6 +91,7 @@ def update_online_spend_with_quantity(df):
 
     return df
 
+
 def total_spend(df):
     """Adds new column: Total spend
 
@@ -105,4 +108,3 @@ def total_spend(df):
     )
 
     return df
-
