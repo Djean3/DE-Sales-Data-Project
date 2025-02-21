@@ -13,7 +13,17 @@ def process_sales_function(event, context):
     df = remove_trailing_zeros_from_df(df)
     df = update_online_spend_with_quantity(df)
     df = total_spend(df)
-    wr.s3.to_parquet(df, "s3://de-sales-data-project-data-lake-146479615822/sales_data/processed_file.parquet")
+    wr.s3.to_parquet(
+        df, 
+        path = "s3://de-sales-data-project-data-lake-146479615822/sales_data/"
+                dataset=True,
+                mode="overwrite",
+                table="sales_data",
+                database="data_lake",
+                #mode="overwrite_partitions",
+                #partition_cols=["Year", "Month"],
+                )
+    
     return {"status": "success", "message": "hello world"}
 
 
