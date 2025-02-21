@@ -15,7 +15,7 @@ def process_sales_function(event, context):
     df = total_spend(df)
     wr.s3.to_parquet(
         df, 
-        path = "s3://de-sales-data-project-data-lake-146479615822/sales_data/"
+        path = "s3://de-sales-data-project-data-lake-146479615822/sales_data/",
                 dataset=True,
                 mode="overwrite",
                 table="sales_data",
