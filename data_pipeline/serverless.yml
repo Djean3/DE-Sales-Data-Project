@@ -39,7 +39,7 @@ provider:
   environment: ${file(./config/${self:custom.stage}.yml):env_vars}
 
 functions:
-  sampleFunction:
+  processSalesData:
     description: Processing Sales Data
     name: ${self:service}-${self:custom.stage}-process-sales-data
     image:
@@ -49,5 +49,16 @@ functions:
       entryPoint:
         - "/lambda-entrypoint.sh"
 
+  processCustomerData:
+    description: Processing Customer Data
+    name: ${self:service}-${self:custom.stage}-process-customer-data
+    image:
+      name: data-pipeline
+      command:
+        - functions/process_customer_data.process_customer_data
+      entryPoint:
+        - "/lambda-entrypoint.sh"
+
 custom:
   stage: ${opt:stage, 'development'}
+  #we will copy the same function and create another one and that will be customer processing function from line 42 and

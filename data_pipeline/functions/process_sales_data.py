@@ -13,17 +13,18 @@ def process_sales_function(event, context):
     df = remove_trailing_zeros_from_df(df)
     df = update_online_spend_with_quantity(df)
     df = total_spend(df)
+    table_name = "sales_data"
     wr.s3.to_parquet(
         df, 
-        path = "s3://de-sales-data-project-data-lake-146479615822/sales_data/",
+        path = f"s3://de-sales-data-project-data-lake-146479615822/{table_name}/",
                 dataset=True,
                 mode="overwrite",
-                table="sales_data",
+                table=table_name,
                 database="data_lake",
                 #mode="overwrite_partitions",
                 #partition_cols=["Year", "Month"],
                 )
-    
+    #run this is a jupyter notebook and make the new tables
     return {"status": "success", "message": "hello world"}
 
 
