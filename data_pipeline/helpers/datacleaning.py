@@ -39,14 +39,14 @@ def generate_sales_data(df, start_date=None, end_date=None, current_day_only=Fal
                 profit = round(total_sell_price - total_purchase_cost, 2)
 
                 data.append({
-                    "Date": current_date.strftime("%Y-%m-%d"),
-                    "Customer": customer["Customer"],
-                    "Address": customer["Address"],
-                    "Bean Type": bean_type,
-                    "Amount Purchased (lbs)": amount_purchased,
-                    "Purchase Cost ($)": total_purchase_cost,
-                    "Sell Price ($)": total_sell_price,
-                    "Profit ($)": profit
+                    "date": current_date.strftime("%Y-%m-%d"),
+                    "customer": customer["customer"],
+                    "address": customer["address"],
+                    "bean_type": bean_type,
+                    "amount_purchased_lbs": amount_purchased,
+                    "purchase_cost": total_purchase_cost,
+                    "sell_price": total_sell_price,
+                    "profit": profit
                 })
 
         current_date += timedelta(days=1)
@@ -131,7 +131,7 @@ def drop_bad_addresses(df):
     Removes rows where the Address column does not start with a number.
     Assumes the column is named 'Address'.
     """
-    return df[df["Address"].astype(str).str.match(r"^\d+")]
+    return df[df["address"].astype(str).str.match(r"^\d+")]
 
 
 def extract_state(df):
@@ -145,7 +145,7 @@ def extract_state(df):
         pd.DataFrame: DataFrame with an added 'State' column.
     """
     # Use regular expression to extract the state abbreviation (two uppercase letters)
-    df['State'] = df['Address'].str.extract(r',\s*([A-Z]{2})\b')
+    df['state'] = df['address'].str.extract(r',\s*([A-Z]{2})\b')
     return df
 
 
@@ -183,7 +183,7 @@ def assign_region(df):
         "AK": "West", "HI": "West", "DC": "Mid-Atlantic"  # DC was near MD/VA
     }
 
-    df["Region"] = df["State"].map(region_map).fillna("Unknown")
+    df["region"] = df["state"].map(region_map).fillna("Unknown")
     return df
 
 
