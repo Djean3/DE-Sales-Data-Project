@@ -1,5 +1,112 @@
 import pandas as pd
 import awswrangler as wr
+from datetime import datetime, timedelta
+import random
+
+def generate_sales_data(start_date, end_date, df, current_day_only=True):
+    # Load bean pricing data
+    bean_types, purchase_prices, sell_prices = get_bean_data()
+
+    # Load customers and their addresses
+    
+    
+    #df = df[["Customer", "Address"]].dropna().drop_duplicates()
+    customers = df.to_dict("records")
+
+    # Handle date range
+    start_date = datetime.strptime(start_date, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    if current_day_only:
+        today = datetime.today().date()
+        start_date = end_date = datetime.combine(today, datetime.min.time())
+
+    data = []
+    current_date = start_date
+
+    while current_date <= end_date:
+        for customer in customers:
+            if random.random() < 0.7:  # 70% chance they make an order
+                bean_type = random.choice(bean_types)
+                amount_purchased = random.randint(500, 5000)
+
+                purchase_price = purchase_prices.get(bean_type, 0)
+                sell_price = sell_prices.get(bean_type, 0)
+                total_purchase_cost = round(amount_purchased * purchase_price, 2)
+                total_sell_price = round(amount_purchased * sell_price, 2)
+                profit = round(total_sell_price - total_purchase_cost, 2)
+
+                data.append({
+                    "Date": current_date.strftime("%Y-%m-%d"),
+                    "Customer": customer["Customer"],
+                    "Address": customer["Address"],
+                    "Bean Type": bean_type,
+                    "Amount Purchased (lbs)": amount_purchased,
+                    "Purchase Cost ($)": total_purchase_cost,
+                    "Sell Price ($)": total_sell_price,
+                    "Profit ($)": profit
+                })
+
+        current_date += timedelta(days=1)
+
+    return pd.DataFrame(data)
+
+
+
+def get_bean_data():
+    bean_types = [
+        "Black Beans", "Pinto Beans", "Kidney Beans", "Chickpeas", "Lentils",
+        "Navy Beans", "Adzuki Beans", "Mung Beans", "Soybeans", "Great Northern Beans",
+        "Fava Beans", "Cranberry Beans", "Cannellini Beans", "Butter Beans",
+        "Green Peas", "Yellow Peas", "Split Peas", "Red Beans", "White Beans",
+        "Borlotti Beans", "Anasazi Beans", "Flageolet Beans", "Marrow Beans",
+        "Tepary Beans", "Beluga Lentils", "Puy Lentils", "Horse Beans",
+        "Black Eyed Peas", "Tarbais Beans", "Val Beans", "Scarlet Runner Beans",
+        "Pink Beans", "Calypso Beans", "Dragon Tongue Beans", "Jacob’s Cattle Beans"
+    ]
+
+    # Purchase prices per pound
+    purchase_price_per_pound = {
+        "Black Beans": 0.32, "Pinto Beans": 0.30, "Kidney Beans": 0.38, "Chickpeas": 0.35,
+        "Lentils": 0.28, "Navy Beans": 0.34, "Adzuki Beans": 0.70, "Mung Beans": 0.65,
+        "Soybeans": 0.25, "Great Northern Beans": 0.35, "Fava Beans": 0.55, "Cranberry Beans": 0.75,
+        "Cannellini Beans": 0.50, "Butter Beans": 0.45, "Green Peas": 0.25, "Yellow Peas": 0.22,
+        "Split Peas": 0.20, "Red Beans": 0.38, "White Beans": 0.35, "Borlotti Beans": 0.85,
+        "Anasazi Beans": 1.00, "Flageolet Beans": 1.25, "Marrow Beans": 1.10, "Tepary Beans": 1.30,
+        "Beluga Lentils": 1.00, "Puy Lentils": 1.10, "Horse Beans": 0.55, "Black Eyed Peas": 0.40,
+        "Tarbais Beans": 1.60, "Val Beans": 1.50, "Scarlet Runner Beans": 1.65, "Pink Beans": 0.45,
+        "Calypso Beans": 1.20, "Dragon Tongue Beans": 1.50, "Jacob’s Cattle Beans": 1.25
+    }
+
+    # Sell prices with markup based on category
+    sell_price_per_pound = {
+        # Commodity Beans (2.5x markup)
+        bean: round(purchase_price_per_pound[bean] * 3, 2) for bean in [
+            "Black Beans", "Pinto Beans", "Kidney Beans", "Chickpeas", "Lentils",
+            "Navy Beans", "Soybeans", "Green Peas", "Yellow Peas", "Split Peas",
+            "Red Beans", "White Beans", "Black Eyed Peas", "Pink Beans"
+        ]
+    }
+    
+    # Mid-Tier Beans (3x markup)
+    mid_tier_beans = ["Adzuki Beans", "Mung Beans", "Great Northern Beans", "Fava Beans",
+                      "Cranberry Beans", "Cannellini Beans", "Butter Beans", "Horse Beans", "Borlotti Beans"]
+    sell_price_per_pound.update({bean: round(purchase_price_per_pound[bean] * 3, 2) for bean in mid_tier_beans})
+
+    # Specialty/Heirloom Beans (3.5x to 4x markup)
+    specialty_beans = {
+        "Anasazi Beans": 3.5, "Flageolet Beans": 3.5, "Marrow Beans": 3.5, "Tepary Beans": 3.5,
+        "Beluga Lentils": 3.5, "Puy Lentils": 3.5, "Val Beans": 3.5, "Scarlet Runner Beans": 3.5,
+        "Calypso Beans": 3.5, "Dragon Tongue Beans": 3.5, "Jacob’s Cattle Beans": 3.5,
+        "Tarbais Beans": 4
+    }
+    sell_price_per_pound.update({
+        bean: round(purchase_price_per_pound[bean] * specialty_beans[bean], 2)
+        for bean in specialty_beans
+    })
+
+    return bean_types, purchase_price_per_pound, sell_price_per_pound
+
+
 
 
 def drop_na(df):
@@ -76,111 +183,4 @@ def assign_region(df):
     df["Region"] = df["State"].map(region_map).fillna("Unknown")
     return df
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def rename_avg_price_to_price(df):
-#     """rename 'Avg_Price' column to 'Price'
-
-#     Args:
-#         df (dataframe): sales data dataframe
-
-#     Returns:
-#         dataframe: df with updated column name
-#     """
-#     df_renamed = df.rename(columns={"Avg_Price": "Price"})
-#     return df_renamed
-
-# def remove_trailing_zeros_from_df(df):
-#     """remove trailing zeros from float columns in dataframe
-
-#     Args:
-#         df (_type_): The DataFrame from which trailing zeros in float columns will be removed. It is modified in place.
-
-
-#     Returns:
-#         _type_: The DataFrame with trailing zeros removed from float columns. Note that this is the same DataFrame object passed as the argument, modified in place.
-#     """
-#     for col in df.columns:
-#         # Check if the column is a float dtype
-#         if df[col].dtype == float:
-#             # Use apply to convert float to int if it's an integer, else leave as float
-#             df[col] = df[col].apply(lambda x: int(x) if x.is_integer() else x)
-#     return df
-
-# def update_online_spend_with_quantity(df):
-#     """Updates the "Online_Spend" column in a DataFrame with cumulative spending amounts per customer, factoring in the quantity of each transaction.
-
-#     This function sorts the input DataFrame by "CustomerID", "Transaction_Date", and "Transaction_ID" to ensure chronological processing of transactions. For each transaction, it calculates the spending by multiplying the "Price" by the "Quantity". It then updates the "Online_Spend" for each customer cumulatively, adding the calculated spend to the customer's previous total spend stored in a dictionary. The updated "Online_Spend" values are then mapped back to the original DataFrame.
-
-#     Args:
-#         df (pandas.DataFrame): A DataFrame containing at least the columns "CustomerID", "Transaction_Date", "Transaction_ID", "Price", "Quantity", and "Online_Spend". It's expected that "Price" and "Quantity" are numeric.
-
-#     Returns:
-#         _type_: pandas.DataFrame: The original DataFrame with the "Online_Spend" column updated to reflect the cumulative spending amount per customer, taking into account the quantity of each transaction.
-#     """
-#     # Create a copy to sort without changing the original DataFrame's order
-#     df_sorted = df.sort_values(
-#         by=["CustomerID", "Transaction_Date", "Transaction_ID"]
-#     ).copy()
-
-#     # Initialize a dictionary to keep track of the last Online_Spend for each customer
-#     last_online_spend = {}
-
-#     # Calculate the new Online_Spend values and store them in a list
-#     new_online_spends = []
-
-#     for index, row in df_sorted.iterrows():
-#         customer_id = row["CustomerID"]
-#         # Calculate the spend for this transaction, taking Quantity into account
-#         transaction_spend = row["Price"] * row["Quantity"]
-
-#         if customer_id in last_online_spend:
-#             # Update the Online_Spend for the current purchase by adding the transaction spend
-#             new_spend = last_online_spend[customer_id] + transaction_spend
-#         else:
-#             # If it's the first purchase, initialize Online_Spend with this transaction's spend
-#             new_spend = transaction_spend
-
-#         # Update the last Online_Spend for this customer
-#         last_online_spend[customer_id] = new_spend
-#         # Append the updated Online_Spend value to the list
-#         new_online_spends.append(new_spend)
-
-#     # Map the new Online_Spend values back to the original DataFrame using the index from the sorted copy
-#     for original_idx, sorted_idx in enumerate(df_sorted.index):
-#         df.at[sorted_idx, "Online_Spend"] = new_online_spends[original_idx]
-
-#     return df
-
-# def total_spend(df):
-#     """Adds new column: Total spend
-
-#     Args:
-#         df (pandas.DataFrame): The DataFrame to calculate total spend for, must include "Offline_Spend", "Online_Spend", and "Delivery_Charges" columns.
-
-
-#     Returns:
-#         pandas.DataFrame: The DataFrame with an added "Total Spend" column, reflecting the sum of offline and online spends plus delivery charges for each transaction.
-#     """
-#     # Correct the Total Spend calculation
-#     df["Total Spend"] = (
-#         df["Offline_Spend"] + df["Online_Spend"] + df["Delivery_Charges"]
-#     )
-
-#    return df
 
