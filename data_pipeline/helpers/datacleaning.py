@@ -3,8 +3,11 @@ import awswrangler as wr
 from datetime import datetime, timedelta
 import random
 
-def generate_sales_data(start_date, end_date, df, current_day_only=True):
-    # Load bean pricing data
+def generate_sales_data(df, start_date=None, end_date=None, current_day_only=False):
+    if start_date is None:
+        start_date = datetime.today().strftime("%Y-%m-%d")
+    if end_date is None:
+        end_date = datetime.today().strftime("%Y-%m-%d")
     bean_types, purchase_prices, sell_prices = get_bean_data()
 
     # Load customers and their addresses
