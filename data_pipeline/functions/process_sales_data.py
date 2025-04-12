@@ -20,7 +20,6 @@ def process_sales_function(event, context):
         df, 
         path = f"s3://de-sales-data-project-data-lake-146479615822/{table_name}/",
                 dataset=True,
-                mode="overwrite",
                 table=table_name,
                 database="data_lake",
                 mode="overwrite_partitions",
