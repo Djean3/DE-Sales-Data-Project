@@ -1,7 +1,7 @@
 import os
 
 import awswrangler as wr
-from helpers.datacleaning import drop_na, rename_avg_price_to_price, remove_trailing_zeros_from_df, update_online_spend_with_quantity, total_spend
+from helpers.datacleaning import drop_na, assign_region, extract_state, drop_bad_addresses
 
 def process_sales_function(event, context):
     df = wr.s3.read_csv(
@@ -10,13 +10,7 @@ def process_sales_function(event, context):
     df = drop_na(df)
     df = drop_bad_addresses(df)
     df = extract_state(df)
-    df = assign_region(df)
-
-    #df = rename_avg_price_to_price(df)
-    #df = df.drop(columns=["Unnamed: 0", "Date"])
-    #df = remove_trailing_zeros_from_df(df)
-    #df = update_online_spend_with_quantity(df)
-    #df = total_spend(df)
+    df = assign_region(df)    
     table_name = "sales_data"
     wr.s3.to_parquet(
         df, 
